@@ -1,0 +1,461 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Results - PH/ULE Assessment</title>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+      line-height: 1.6;
+      color: #2c3e50;
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      min-height: 100vh;
+      padding: 1.5rem 1rem;
+    }
+
+    .container {
+      max-width: 1400px;
+      margin: 0 auto;
+      background: white;
+      border-radius: 20px;
+      box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+      padding: 2rem;
+      animation: fadeIn 0.6s ease-in;
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(20px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    h1 {
+      font-size: 2.5rem;
+      font-weight: 800;
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+      margin-bottom: 0.5rem;
+      line-height: 1.2;
+    }
+
+    .nav-buttons {
+      display: flex;
+      justify-content: space-between;
+      gap: 1rem;
+      margin-bottom: 2rem;
+      flex-wrap: wrap;
+    }
+
+    .nav-button {
+      display: inline-flex;
+      align-items: center;
+      padding: 0.75rem 1.5rem;
+      border-radius: 10px;
+      text-decoration: none;
+      font-weight: 600;
+      font-size: 0.9rem;
+      transition: all 0.3s ease;
+      box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+      background: #f8f9fa;
+      color: #495057;
+      border: 2px solid #dee2e6;
+    }
+
+    .nav-button:hover {
+      background: #e9ecef;
+      transform: translateX(-3px);
+      box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
+    }
+
+    .sectors-table {
+      width: 100%;
+      margin: 2rem 0;
+      border-collapse: collapse;
+      background: #f8f9fa;
+      border-radius: 12px;
+      overflow: hidden;
+    }
+
+    .sectors-table th {
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      color: white;
+      padding: 1rem;
+      text-align: left;
+      font-weight: 600;
+      text-transform: uppercase;
+      font-size: 0.85rem;
+      letter-spacing: 0.5px;
+    }
+
+    .sectors-table td {
+      padding: 1rem;
+      border-bottom: 1px solid #dee2e6;
+    }
+
+    .sectors-table tr:last-child td {
+      border-bottom: none;
+    }
+
+    .sectors-table tr:hover {
+      background: #e9ecef;
+    }
+
+    .sectors-table a {
+      color: #667eea;
+      text-decoration: none;
+      font-weight: 600;
+    }
+
+    .sectors-table a:hover {
+      text-decoration: underline;
+    }
+
+    .overall-row {
+      background: #e7f3ff !important;
+      font-weight: 700;
+    }
+
+    .charts-container {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 2rem;
+      margin: 2rem 0;
+    }
+
+    .chart-box {
+      background: white;
+      padding: 1.5rem;
+      border-radius: 12px;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+    }
+
+    .radar-chart {
+      grid-column: 1 / -1;
+      max-width: 700px;
+      margin: 0 auto;
+    }
+
+    .chart-box h3 {
+      color: #667eea;
+      font-size: 1.25rem;
+      margin-bottom: 1rem;
+      text-align: center;
+    }
+
+    .action-plan {
+      margin-top: 2rem;
+      padding: 1.5rem;
+      background: #f8f9fa;
+      border-left: 4px solid #667eea;
+      border-radius: 8px;
+    }
+
+    .action-plan h2 {
+      color: #2c3e50;
+      font-size: 1.5rem;
+      margin-bottom: 0.5rem;
+    }
+
+    .action-plan p {
+      color: #6c757d;
+      margin-bottom: 1rem;
+    }
+
+    .action-button {
+      display: inline-block;
+      padding: 0.75rem 1.5rem;
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      color: white;
+      text-decoration: none;
+      border-radius: 8px;
+      font-weight: 600;
+      transition: all 0.3s ease;
+      box-shadow: 0 4px 6px rgba(102, 126, 234, 0.3);
+    }
+
+    .action-button:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 6px 12px rgba(102, 126, 234, 0.4);
+    }
+
+    @media (max-width: 968px) {
+      .charts-container {
+        grid-template-columns: 1fr;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <div class="nav-buttons">
+      <a href="integration-scalability.html" class="nav-button">← Back to Assessment</a>
+    </div>
+
+    <h1>Results</h1>
+
+    <h2 style="margin: 2rem 0 1rem 0; color: #495057; font-size: 1.25rem;">SECTORS</h2>
+    <table class="sectors-table">
+      <thead>
+        <tr>
+          <th></th>
+          <th>Present</th>
+          <th>Future</th>
+        </tr>
+      </thead>
+      <tbody id="sectorsTableBody">
+        <!-- Will be populated by JavaScript -->
+      </tbody>
+    </table>
+
+    <div class="charts-container">
+      <div class="chart-box radar-chart">
+        <h3>Overall Assessment</h3>
+        <canvas id="radarChart"></canvas>
+      </div>
+
+      <div class="chart-box">
+        <h3>Sector Comparison</h3>
+        <canvas id="barChart"></canvas>
+      </div>
+    </div>
+
+    <div class="action-plan">
+      <h2>Action Plan</h2>
+      <p>Based on your responses, an Action Plan has been generated to summarise the steps required to go from your current performance to your desired level of capability.</p>
+      <a href="#" class="action-button">View Action Plan →</a>
+    </div>
+  </div>
+
+  <script>
+    // Weightings based on the uploaded image
+    const weightings = {
+      // Policy & Funding
+      'q1-now': 0.065, 'q1-future': 0.065,
+      'q2-now': 0.057, 'q2-future': 0.057,
+      
+      // Overarching Strategies
+      'q3-now': 0.051, 'q3-future': 0.051,
+      'q4-now': 0.040, 'q4-future': 0.040,
+      
+      // Organisational Capability
+      'q5-now': 0.040, 'q5-future': 0.040,
+      'q6-now': 0.065, 'q6-future': 0.065,
+      'q7-now': 0.057, 'q7-future': 0.057,
+      'q8-now': 0.055, 'q8-future': 0.055,
+      'q9-now': 0.050, 'q9-future': 0.050,
+      
+      // Process Maturity
+      'q10-now': 0.045, 'q10-future': 0.045,
+      'q11-now': 0.053, 'q11-future': 0.053,
+      'q12-now': 0.047, 'q12-future': 0.047,
+      'q13-now': 0.053, 'q13-future': 0.053,
+      'q14-now': 0.052, 'q14-future': 0.052,
+      
+      // Supply Chain Readiness
+      'q15-now': 0.050, 'q15-future': 0.050,
+      'q16-now': 0.045, 'q16-future': 0.045,
+      'q17-now': 0.022, 'q17-future': 0.022,
+      
+      // Integration & Scalability
+      'q18-now': 0.037, 'q18-future': 0.037,
+      'q19-now': 0.053, 'q19-future': 0.053
+    };
+
+    const sectorQuestions = {
+      'Policy & Funding': ['q1', 'q2'],
+      'Overarching Strategies': ['q3', 'q4'],
+      'Organisational capability': ['q5', 'q6', 'q7', 'q8', 'q9'],
+      'Process maturity': ['q10', 'q11', 'q12', 'q13', 'q14'],
+      'Supply chain readiness': ['q15', 'q16', 'q17'],
+      'Integration & Scalability': ['q18', 'q19']
+    };
+
+    const maturityLevels = {
+      1: 'Follower',
+      2: 'Starter',
+      3: 'Mature',
+      4: 'Leader',
+      5: 'Innovator'
+    };
+
+    function calculateSectorScore(sectorName, timeframe) {
+      const questions = sectorQuestions[sectorName];
+      let totalWeightedScore = 0;
+      
+      questions.forEach(qNum => {
+        const key = `${qNum}-${timeframe}`;
+        const value = parseInt(localStorage.getItem(key)) || 0;
+        const weight = weightings[key] || 0;
+        totalWeightedScore += value * weight;
+      });
+      
+      return totalWeightedScore;
+    }
+
+    function getMaturityLevel(score) {
+      if (score >= 0 && score < 0.8) return 'Observer';
+      if (score >= 0.8 && score < 1.6) return 'Early adopter';
+      if (score >= 1.6 && score < 2.4) return 'Observer'; // Based on image
+      if (score >= 2.4 && score < 3.2) return 'Effective deliverer';
+      if (score >= 3.2 && score <= 5) return 'Leader';
+      return 'Observer';
+    }
+
+    // Calculate scores for all sectors
+    const sectorScores = {};
+    Object.keys(sectorQuestions).forEach(sector => {
+      sectorScores[sector] = {
+        now: calculateSectorScore(sector, 'now'),
+        future: calculateSectorScore(sector, 'future')
+      };
+    });
+
+    // Calculate overall score
+    const overallNow = Object.values(sectorScores).reduce((sum, s) => sum + s.now, 0);
+    const overallFuture = Object.values(sectorScores).reduce((sum, s) => sum + s.future, 0);
+
+    // Populate table
+    const tableBody = document.getElementById('sectorsTableBody');
+    Object.keys(sectorQuestions).forEach((sector, index) => {
+      const letters = ['A', 'B', 'C', 'D', 'E', 'F'];
+      const row = document.createElement('tr');
+      
+      const nowLevel = getMaturityLevel(sectorScores[sector].now);
+      const futureLevel = getMaturityLevel(sectorScores[sector].future);
+      
+      row.innerHTML = `
+        <td>${letters[index]} <a href="#">${sector}</a></td>
+        <td>${nowLevel}</td>
+        <td>${futureLevel}</td>
+      `;
+      tableBody.appendChild(row);
+    });
+
+    // Add overall row
+    const overallRow = document.createElement('tr');
+    overallRow.className = 'overall-row';
+    overallRow.innerHTML = `
+      <td><strong>Overall</strong></td>
+      <td><strong>${getMaturityLevel(overallNow)}</strong></td>
+      <td><strong>${getMaturityLevel(overallFuture)}</strong></td>
+    `;
+    tableBody.appendChild(overallRow);
+
+    // Create Radar Chart
+    const radarCtx = document.getElementById('radarChart').getContext('2d');
+    new Chart(radarCtx, {
+      type: 'radar',
+      data: {
+        labels: Object.keys(sectorQuestions),
+        datasets: [
+          {
+            label: 'Now',
+            data: Object.values(sectorScores).map(s => s.now),
+            borderColor: 'rgb(102, 126, 234)',
+            backgroundColor: 'rgba(102, 126, 234, 0.2)',
+            borderWidth: 2,
+            pointBackgroundColor: 'rgb(102, 126, 234)',
+            pointBorderColor: '#fff',
+            pointHoverBackgroundColor: '#fff',
+            pointHoverBorderColor: 'rgb(102, 126, 234)'
+          },
+          {
+            label: 'Future',
+            data: Object.values(sectorScores).map(s => s.future),
+            borderColor: 'rgb(255, 159, 64)',
+            backgroundColor: 'rgba(255, 159, 64, 0.2)',
+            borderWidth: 2,
+            pointBackgroundColor: 'rgb(255, 159, 64)',
+            pointBorderColor: '#fff',
+            pointHoverBackgroundColor: '#fff',
+            pointHoverBorderColor: 'rgb(255, 159, 64)'
+          }
+        ]
+      },
+      options: {
+        responsive: true,
+        maintainAspectRatio: true,
+        scales: {
+          r: {
+            beginAtZero: true,
+            max: 5,
+            ticks: {
+              stepSize: 1
+            }
+          }
+        },
+        plugins: {
+          legend: {
+            position: 'bottom',
+            labels: {
+              padding: 20,
+              font: {
+                size: 14
+              }
+            }
+          }
+        }
+      }
+    });
+
+    // Create Horizontal Bar Chart
+    const barCtx = document.getElementById('barChart').getContext('2d');
+    new Chart(barCtx, {
+      type: 'bar',
+      data: {
+        labels: Object.keys(sectorQuestions),
+        datasets: [
+          {
+            label: 'Now',
+            data: Object.values(sectorScores).map(s => s.now),
+            backgroundColor: 'rgb(102, 126, 234)',
+            borderColor: 'rgb(102, 126, 234)',
+            borderWidth: 1
+          },
+          {
+            label: 'Future',
+            data: Object.values(sectorScores).map(s => s.future),
+            backgroundColor: 'rgb(155, 135, 245)',
+            borderColor: 'rgb(155, 135, 245)',
+            borderWidth: 1
+          }
+        ]
+      },
+      options: {
+        indexAxis: 'y',
+        responsive: true,
+        maintainAspectRatio: true,
+        scales: {
+          x: {
+            beginAtZero: true,
+            max: 5,
+            ticks: {
+              stepSize: 1
+            }
+          }
+        },
+        plugins: {
+          legend: {
+            position: 'bottom',
+            labels: {
+              padding: 15,
+              font: {
+                size: 12
+              }
+            }
+          }
+        }
+      }
+    });
+  </script>
+</body>
+</html>

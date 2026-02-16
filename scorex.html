@@ -1,0 +1,291 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PHOCUS Maturity Results</title>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        body {
+            font-family: 'Segoe UI', system-ui, sans-serif;
+            background-color: #f0f2f5;
+            display: flex;
+            justify-content: center;
+            padding: 40px 20px;
+            margin: 0;
+        }
+        .results-card {
+            background: white;
+            border-radius: 16px;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+            padding: 30px;
+            width: 100%;
+            max-width: 1000px;
+        }
+        h1 {
+            color: #2d6a4f;
+            text-align: center;
+            margin-bottom: 30px;
+            font-size: 1.8rem;
+        }
+        .chart-wrapper {
+            position: relative;
+            height: 600px;
+            margin-bottom: 30px;
+        }
+        .total-box {
+            display: flex;
+            justify-content: space-around;
+            background: #f8f9fa;
+            padding: 20px;
+            border-radius: 12px;
+            border: 1px solid #e9ecef;
+        }
+        .score-item { 
+            text-align: center; 
+        }
+        .score-val { 
+            font-size: 1.5rem; 
+            font-weight: 800; 
+            display: block; 
+        }
+        .score-label { 
+            font-size: 0.9rem; 
+            color: #666; 
+            text-transform: uppercase; 
+        }
+        .now-text { 
+            color: #76b041; 
+        }
+        .future-text { 
+            color: #f77f00; 
+        }
+        .nav-buttons {
+            display: flex;
+            justify-content: space-between;
+            gap: 1rem;
+            margin-bottom: 2rem;
+            flex-wrap: wrap;
+        }
+        .nav-button {
+            display: inline-flex;
+            align-items: center;
+            padding: 0.75rem 1.5rem;
+            border-radius: 10px;
+            text-decoration: none;
+            font-weight: 600;
+            font-size: 0.9rem;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            background: #f8f9fa;
+            color: #495057;
+            border: 2px solid #dee2e6;
+        }
+        .nav-button:hover {
+            background: #e9ecef;
+            transform: translateX(-3px);
+            box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
+        }
+    </style>
+</head>
+<body>
+
+<div class="results-card">
+    <div class="nav-buttons">
+        <a href="integration-scalability.html" class="nav-button">← Back to Assessment</a>
+		<a href="action-plan.html" class="nav-button">Action Plan →</a>
+    </div>
+
+    <h1>PHOCUS Maturity Assessment Results</h1>
+    
+    <div class="chart-wrapper">
+        <canvas id="radarChart"></canvas>
+    </div>
+
+    <div class="total-box">
+        <div class="score-item">
+            <span class="score-label">Current Maturity Index</span>
+            <span class="score-val now-text" id="nowTotal">0.000</span>
+        </div>
+        <div class="score-item">
+            <span class="score-label">Target Maturity Index</span>
+            <span class="score-val future-text" id="futureTotal">0.000</span>
+        </div>
+    </div>
+</div>
+
+<script>
+    // Question labels matching the 20 items in the original
+    const labels = [
+        'Policy', 
+        'Funding', 
+        'Delivery strategy', 
+        'Quality assurance strategy',
+        'Procurement strategy', 
+        'Leadership & governance', 
+        'Culture & collaboration',
+        'Training & skills development', 
+        'Financial analysis capability',
+        'Stakeholder engagement', 
+        'Process documentation', 
+        'Project management',
+        'Risk appetite and management', 
+        'Post occupancy management',
+        'Feedback & iteration mechanisms', 
+        'Supply Chain Appetite / Market Readiness',
+        'Supplier Training/Certification & Skills Development', 
+        'Construction innovation',
+        'Supply chain integration', 
+        'Scalability & market growth'
+    ];
+
+    // Mapping of question IDs to their weightings
+    const weightings = {
+        'q1-now': 0.065, 'q1-future': 0.065,   // Policy
+        'q2-now': 0.057, 'q2-future': 0.057,   // Funding
+        'q3-now': 0.051, 'q3-future': 0.051,   // Delivery strategy
+        'q4-now': 0.040, 'q4-future': 0.040,   // Quality assurance strategy / Stakeholder engagement
+        'q5-now': 0.040, 'q5-future': 0.040,   // Procurement strategy (Leadership)
+        'q6-now': 0.065, 'q6-future': 0.065,   // Leadership & governance (Training)
+        'q7-now': 0.057, 'q7-future': 0.057,   // Culture & collaboration
+        'q8-now': 0.055, 'q8-future': 0.055,   // Training & skills (Financial analysis)
+        'q9-now': 0.050, 'q9-future': 0.050,   // Financial analysis (Stakeholder engagement)
+        'q10-now': 0.045, 'q10-future': 0.045, // Stakeholder engagement (Process doc)
+        'q11-now': 0.053, 'q11-future': 0.053, // Process documentation (Project mgmt)
+        'q12-now': 0.047, 'q12-future': 0.047, // Project management (Risk)
+        'q13-now': 0.053, 'q13-future': 0.053, // Risk appetite (Post occupancy)
+        'q14-now': 0.052, 'q14-future': 0.052, // Post occupancy (Feedback)
+        'q15-now': 0.050, 'q15-future': 0.050, // Feedback mechanisms (Supply chain appetite)
+        'q16-now': 0.045, 'q16-future': 0.045, // Supply Chain Appetite (Supplier training)
+        'q17-now': 0.022, 'q17-future': 0.022, // Supplier Training (Construction innovation)
+        'q18-now': 0.037, 'q18-future': 0.037, // Construction innovation (Integration)
+        'q19-now': 0.053, 'q19-future': 0.053  // Supply chain integration (Scalability)
+    };
+
+    // Map questions to labels (some questions map to multiple conceptual areas)
+    const questionToLabelMap = {
+        'q1': 0,   // Policy
+        'q2': 1,   // Funding
+        'q3': 2,   // Delivery strategy
+        'q4': 3,   // Quality assurance / Stakeholder engagement
+        'q5': 5,   // Leadership & governance
+        'q6': 7,   // Training & skills
+        'q7': 6,   // Culture & collaboration
+        'q8': 8,   // Financial analysis
+        'q9': 9,   // Stakeholder engagement
+        'q10': 10, // Process documentation
+        'q11': 11, // Project management
+        'q12': 12, // Risk management
+        'q13': 13, // Post occupancy
+        'q14': 14, // Feedback mechanisms
+        'q15': 15, // Supply Chain Appetite
+        'q16': 16, // Supplier Training
+        'q17': 17, // Construction innovation
+        'q18': 18, // Supply chain integration
+        'q19': 19  // Scalability
+    };
+
+    // Calculate weighted scores for each question
+    function calculateWeightedScores() {
+        const nowData = new Array(20).fill(0);
+        const futureData = new Array(20).fill(0);
+
+        // Get values from localStorage and calculate weighted scores
+        for (let i = 1; i <= 19; i++) {
+            const qNum = `q${i}`;
+            const nowKey = `${qNum}-now`;
+            const futureKey = `${qNum}-future`;
+            
+            const nowValue = parseInt(localStorage.getItem(nowKey)) || 0;
+            const futureValue = parseInt(localStorage.getItem(futureKey)) || 0;
+            
+            const nowWeight = weightings[nowKey] || 0;
+            const futureWeight = weightings[futureKey] || 0;
+            
+            const labelIndex = questionToLabelMap[qNum];
+            
+            // Calculate weighted score (value * weight)
+            nowData[labelIndex] = nowValue * nowWeight;
+            futureData[labelIndex] = futureValue * futureWeight;
+        }
+
+        // Handle special case for q4 mapping to index 4 (Procurement strategy)
+        // This is derived from stakeholder engagement
+        nowData[4] = nowData[3] * 1.0; // Use same as quality assurance
+        futureData[4] = futureData[3] * 1.0;
+
+        return { nowData, futureData };
+    }
+
+    const { nowData, futureData } = calculateWeightedScores();
+
+    // Calculate totals
+    const nowTotal = nowData.reduce((sum, val) => sum + val, 0);
+    const futureTotal = futureData.reduce((sum, val) => sum + val, 0);
+
+    // Update total displays
+    document.getElementById('nowTotal').textContent = nowTotal.toFixed(3);
+    document.getElementById('futureTotal').textContent = futureTotal.toFixed(3);
+
+    // Create radar chart
+    const ctx = document.getElementById('radarChart').getContext('2d');
+    
+    const data = {
+        labels: labels,
+        datasets: [{
+            label: 'Now Weighted',
+            data: nowData,
+            fill: true,
+            backgroundColor: 'rgba(118, 176, 65, 0.2)',
+            borderColor: '#76b041',
+            pointBackgroundColor: '#76b041',
+            pointBorderColor: '#fff',
+            tension: 0.2
+        }, {
+            label: 'Future Weighted',
+            data: futureData,
+            fill: true,
+            backgroundColor: 'rgba(247, 127, 0, 0.2)',
+            borderColor: '#f77f00',
+            pointBackgroundColor: '#f77f00',
+            pointBorderColor: '#fff',
+            tension: 0.2
+        }]
+    };
+
+    new Chart(ctx, {
+        type: 'radar',
+        data: data,
+        options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            scales: {
+                r: {
+                    angleLines: { display: true },
+                    suggestedMin: 0,
+                    suggestedMax: 0.35,
+                    ticks: {
+                        stepSize: 0.05,
+                        backdropColor: 'transparent'
+                    },
+                    pointLabels: {
+                        font: { size: 11, weight: '600' }
+                    }
+                }
+            },
+            plugins: {
+                legend: { 
+                    position: 'bottom',
+                    labels: {
+                        padding: 15,
+                        font: {
+                            size: 13
+                        }
+                    }
+                }
+            }
+        }
+    });
+</script>
+</body>
+</html>

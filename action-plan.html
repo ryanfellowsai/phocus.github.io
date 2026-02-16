@@ -1,0 +1,324 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Action Plan - PHOCUS Assessment</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+      line-height: 1.6;
+      color: #2c3e50;
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      min-height: 100vh;
+      padding: 1.5rem 1rem;
+    }
+
+    .container {
+      max-width: 1400px;
+      margin: 0 auto;
+      background: white;
+      border-radius: 20px;
+      box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+      padding: 2rem;
+      animation: fadeIn 0.6s ease-in;
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(20px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    .nav-buttons {
+      display: flex;
+      justify-content: space-between;
+      gap: 1rem;
+      margin-bottom: 2rem;
+      flex-wrap: wrap;
+    }
+
+    .nav-button {
+      display: inline-flex;
+      align-items: center;
+      padding: 0.75rem 1.5rem;
+      border-radius: 10px;
+      text-decoration: none;
+      font-weight: 600;
+      font-size: 0.9rem;
+      transition: all 0.3s ease;
+      box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+      background: #f8f9fa;
+      color: #495057;
+      border: 2px solid #dee2e6;
+    }
+
+    .nav-button:hover {
+      background: #e9ecef;
+      transform: translateX(-3px);
+      box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
+    }
+
+    .nav-button.primary {
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      color: white;
+      border: none;
+    }
+
+    .nav-button.primary:hover {
+      transform: translateX(3px);
+    }
+
+    h1 {
+      font-size: 2.5rem;
+      font-weight: 800;
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+      margin-bottom: 1rem;
+      line-height: 1.2;
+    }
+
+    .intro {
+      font-size: 1.05rem;
+      color: #6c757d;
+      line-height: 1.6;
+      margin-bottom: 2rem;
+      padding: 1.25rem;
+      background: #f8f9fa;
+      border-left: 4px solid #667eea;
+      border-radius: 8px;
+    }
+
+    .action-table {
+      width: 100%;
+      border-collapse: collapse;
+      margin: 2rem 0;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+      border-radius: 12px;
+      overflow: hidden;
+    }
+
+    .action-table thead {
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      color: white;
+    }
+
+    .action-table th {
+      padding: 1rem;
+      text-align: left;
+      font-weight: 700;
+      font-size: 0.9rem;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+
+    .action-table td {
+      padding: 1rem;
+      border-bottom: 1px solid #e9ecef;
+      font-size: 0.85rem;
+      line-height: 1.5;
+    }
+
+    .action-table tbody tr:last-child td {
+      border-bottom: none;
+    }
+
+    .action-table tbody tr:hover {
+      background: #f8f9fa;
+    }
+
+    .sector-header {
+      font-weight: 700;
+      font-size: 0.95rem;
+      padding: 1.25rem 1rem !important;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+
+    .sector-policy { background: #ff8c42; color: white; }
+    .sector-overarching { background: #ffd166; color: #2c3e50; }
+    .sector-organisational { background: #fef08a; color: #2c3e50; }
+    .sector-process { background: #a7f3d0; color: #2c3e50; }
+    .sector-supply { background: #86efac; color: #2c3e50; }
+    .sector-integration { background: #67e8f9; color: #2c3e50; }
+
+    @media (max-width: 768px) {
+      .action-table {
+        font-size: 0.8rem;
+      }
+      
+      .action-table th,
+      .action-table td {
+        padding: 0.75rem 0.5rem;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <div class="nav-buttons">
+      <a href="results.html" class="nav-button">← Back to Results</a>
+      <a href="email-results.html" class="nav-button primary">Email Results →</a>
+    </div>
+
+    <h1>Action Plan</h1>
+    
+    <p class="intro">
+      Based on your responses, this Action Plan summarises the steps required to go from your current 
+      performance to your desired level of capability. The plan is organized by sector and maturity level.
+    </p>
+
+    <table class="action-table">
+      <thead>
+        <tr>
+          <th style="width: 15%;">Sector</th>
+          <th style="width: 21%;">To reach 'Early Adopter'</th>
+          <th style="width: 21%;">To reach 'Effective Deliverer'</th>
+          <th style="width: 21%;">To reach 'Leader'</th>
+          <th style="width: 22%;">To reach 'Innovator'</th>
+        </tr>
+      </thead>
+      <tbody>
+        <!-- Policy & Funding -->
+        <tr>
+          <td class="sector-header sector-policy" rowspan="2">Policy &<br>Funding</td>
+          <td>Conduct policy gap analysis to understand the current organisational policy landscape and establish priority areas to explore. Identify leadership to move through drafting policy and gather feedback from key stakeholders.</td>
+          <td>Use lessons learned from pilot projects to iterate to include support PH/ULE approaches. Secure leadership buy-in and align policy to the wider organisational implementation. Integrate PH/ULE into procurement and design guidance. Formalise the delivery strategy.</td>
+          <td>Strengthen policy by setting measurable objectives and clear deliverables at a sector-facing level. Establish a review process with your executive team, local authority, and funders. Advocate for and influence others to demonstrate value.</td>
+          <td>Engage influencers for greater external policy promotion. Utilise published policy documentation as a resource for other pilots. Evidence Each of PH/ULE standard to fill in the gaps in the national framework. Inform policy at local level / sector-wide opportunities at funder incentive and regulation reform.</td>
+        </tr>
+        <tr>
+          <td>Capability and generate internal efficacy will benefit. Play overlap and pursue, secure financing, innovation funding; collaborative understanding of funder requirements and develop capability to explore opportunities for alternative procurement approach and governance fit showcase organisational</td>
+          <td>Implement to the organisational funding model and increase project scale-to help inform financial under Pre-use principles for comprehensive resource mobilisation and funding. Help other partners on forms of PH/ULE gain technical assistance. Formalise the delivery strategy.</td>
+          <td>Establish funding strategy with contingencies for risks and opportunities. Continually assess funding options, procurement and construction, location and team and incorporate management innovation performance tracking and evaluation mechanism. Embed information into procurement policies</td>
+          <td>Help resource through framework and advocate for funding at a sector, regional and national level. Engage with governance through framework and collaboration with other sector peers. Establish feedback loop to stakeholder learning level national framework and advocate demonstrate results</td>
+        </tr>
+
+        <!-- Overarching Strategies -->
+        <tr>
+          <td class="sector-header sector-overarching" rowspan="2">Overarching<br>Strategies</td>
+          <td>Build foundations on PH/ULE benefits and evidence it needs. Use pilots and collect internal PH/ULE sustainability business understanding</td>
+          <td>Formalise the delivery strategy, including timeframes to implementation, continual learning from pilots, procurement and construction. Use data and PH/ULE principles aligned incorporate lessons from pilot stage into organisation-wide process for sustainability for all new build and retrofit delivery</td>
+          <td>Create structured continuous learning and evaluation loop. Use collected evidence continuously improve. Work with designers, contractors, and consultants to manage ownership performance tracking and evaluation mechanisms. Embed information into procurement policies</td>
+          <td>Build like delivery strategy across all sectors. Develop strategic partnership levels. Use data to demonstrate work with designers, contractors, and consultants to manage ownership performance tracking and evaluation mechanisms. Engage in new procurement through framework and advocate with other sector stakeholders</td>
+        </tr>
+        <tr>
+          <td>Explore Tenant Focus activities Develop a Tenant Liaison or Soft Landings plan. Support tenants skills requirements resources</td>
+          <td>Form evidence PH/ULE team building capability guidance and resources Create pilot projects framework/tools and include Develop structured handover delivery support handoff workflow for self-delivery</td>
+          <td>Use soft landings to inform design and delivery create site Build a repository of feedback and lessons. Develop standard ability (or establish modelling facilities. Pilot process for residents Develop internal organisational response and reporting</td>
+          <td>Continue them work soft landings modelling processes ongoing delivery support handoff feedback loop to stakeholders. Establish feedback loop to organisational learning and advocate formal governance and reporting</td>
+        </tr>
+
+        <!-- Organisational Capability -->
+        <tr>
+          <td class="sector-header sector-organisational" rowspan="5">Organisational<br>Capability</td>
+          <td>Brief tenancies on PH/ULE briefing design. Assess the internal capability options to work external authority</td>
+          <td>Establish Team committed to PH/ULE and PH/ULE Ensure be family understand and resources Create pilot cross-functional structure (structure learning resources delivering delivery)</td>
+          <td>Use soft-landings to inform design and delivery create site. Develop skilled ability (or escalation modelling facilities. Do you like pilot to residents Develop internal cost-ability (or escalation facilities</td>
+          <td>leadership team work soft-landings modelling processes ongoing feedback feedback loop to stakeholders. Establish feedback loop to organizational learning advocate formal governance and reporting</td>
+        </tr>
+        <tr>
+          <td>Identify leadership opportunity to capability understanding organisational behaviours</td>
+          <td>Be strategic PH/ULE Ensure frameworks understand training and certifications (e.g. leadership understanding of resources</td>
+          <td>Accessibility opportunity to capability training and certifications (e.g. leadership understanding of resources</td>
+          <td>Engagement training and certifications leadership understanding and resources</td>
+        </tr>
+        <tr>
+          <td>Identify ambitions and pilot projects within organisational behaviours</td>
+          <td>Formalise policies delivery charter training and team Encourage suppliers to adopt innovation and materials Provide training and sponsor knowledge and materials</td>
+          <td>Structured organisational delivery information charter structures structured sustainability integrated project mechanisms Include sustainability health, sustainability and organisational delivery policies</td>
+          <td>Embed sustainability delivery information sustainability structures structured sustainability in all organisational delivery and project mechanisms Advocate culture sector and leadership</td>
+        </tr>
+        <tr>
+          <td>Initiate dialogue with key supplier above PH/ULE requirements and scope of influence Standard short-form</td>
+          <td>Actively engage suppliers in PH/ULE project planning suppliers capability and consistency Encourage suppliers to adopt PH/ULE delivery</td>
+          <td>Develop leadership and consistent frameworks (e.g. RIBA overlay) Upskill staff on PH/ULE frameworks and compliance Standardise use of applications across accountability for TCS management Adopt informed project management leadership and demonstrate active control Explore transparency across contractor with clear governance and reporting</td>
+          <td>Implement open door delivery procurement framework Building long-term partnership with key suppliers certification (e.g. structured Dec Supplier) Implement shared production innovation pathways and documentation and learning formalised Plan Develop proactive tenant education</td>
+        </tr>
+        <tr>
+          <td>Identify supplier with credentials in PH/ULE delivery</td>
+          <td>Begin informal engagement during pilot projects</td>
+          <td>Engage with construction upskill to PH/ULE frameworks and enable Promote training certification. Engage strategic suppliers in application across accountability project management Supply informed demonstrate evidence and active control project transparency across contractor work clear and demonstrate reporting</td>
+          <td>Building long-term strategic partnership with strategic suppliers. Develop shared production innovation pathways documentation learning formalised Plan Develop proactive tenant education</td>
+        </tr>
+
+        <!-- Process Maturity -->
+        <tr>
+          <td class="sector-header sector-process" rowspan="5">Process<br>maturity</td>
+          <td>Develop in-house for sponsor for key stages (design, procurement, construction) commissioning Embed PH/ULE principles into these processes</td>
+          <td>Align processes with recognized frameworks (e.g., RIBA overlay) Upskill staff on PH/ULE frameworks and compliance Standardise use of PHPP or similar modelling across accountability for TCS management Adopt informed project management Establish clear and demonstrate active control Explore transparency across contractor with clear governance and reporting</td>
+          <td>Complete and refine application across accountability for TCS management Use informed project management Standardise use of demonstrate active control across transparency contractor clear and active governance and reporting</td>
+          <td>Implement open door framework procurement transparency contractor Building partnership documentation learning formalised Plan Develop proactive tenant education</td>
+        </tr>
+        <tr>
+          <td>Identify simple leads for selection and unit capabilities</td>
+          <td>Use simple leads for selection project planning and project capabilities. Continuous capacity simple TCS, draft control management Structured project management aligned PHPP Totalisator and active monitoring</td>
+          <td>Complete under and/or alternative demonstrate procurement delivery innovation risk Consider project and/or alternative demonstrate procurement delivery risk Continuous supply contracts contractor risk clear Explore transparency sector contractor with clear documentation risk</td>
+          <td>Continuously review and delivery risk Plan Deliver proactive based education</td>
+        </tr>
+        <tr>
+          <td>Develop pilot programme for soft-landings or tenants information plan mapping information plan Use simple leads for collaboration and tenant capabilities</td>
+          <td>Implement structured facilities (e.g., Totalisator) Provide tenant awareness sessions and structured PHPP information (e.g.guidelines) active risk management plan Design</td>
+          <td>Structured engagement plan soft-landings (WGSDF) pilot/similar feedback for learning and improvement plan Design</td>
+          <td>learning and sector-based pilot Plan Design proactive based education</td>
+        </tr>
+        <tr>
+          <td>Collect pilot programme data soft-landings building performance mechanisms Real-time analytics and active monitoring</td>
+          <td>Implement project use structured digital of PHPP use standardised pilot Totalisator and implement monitoring structured PHPP information mechanism pilot pilot risk</td>
+          <td>Use data pattern mechanism pilot-pilot feedback mechanism pilot POE implement Totalisator mechanisms pilot digital Plan develop and pilot risk Design POE Plan</td>
+          <td>Deploy POE pilot feedback real-time monitoring and Plan feedback standardise POE Plan</td>
+        </tr>
+        <tr>
+          <td>Integrate pilot program real-time monitoring integrate POE pilot Deliver</td>
+          <td>Use systematic POE feedback systems real-time pattern book maintain leadership pilot learning and improvement Plan Deliver proactive based education</td>
+          <td>Implement feedback and analytics frameworks tenant leadership sector POE Digital and education Plan</td>
+          <td>Define proactive feedback education</td>
+        </tr>
+
+        <!-- Supply Chain Readiness -->
+        <tr>
+          <td class="sector-header sector-supply" rowspan="3">Supply<br>chain<br>readiness</td>
+          <td>Initiate dialogue with key suppliers above PH/ULE requirements and scope of work</td>
+          <td>Actively engage suppliers in PH/ULE project planning products training and resources build capability Provide training and resources build capability materials Engage strategic suppliers in adoption improved methodologies and materials</td>
+          <td>Build strategic relationships with key suppliers certification Engage strategic suppliers in adoption materials Engage strategic suppliers in methodologies materials Provide consistent procurement and sector documentation and learning materials</td>
+          <td>Co-develop comprehensive frameworks with suppliers training Embed strategic certification learning strategic learning learning and continuous and sector and learning Plan</td>
+        </tr>
+        <tr>
+          <td>Identify suppliers with key suppliers above PH/ULE requirements</td>
+          <td>Provide training co-sponsor the build capability materials engagement suppliers in adoption improved methodologies materials</td>
+          <td>Co-develop suppliers procurement programs strategic Engage strategic suppliers adoption improved documentation methodologies materials</td>
+          <td>Work with certification learning organizations learning strategic deliver supplier Plan</td>
+        </tr>
+        <tr>
+          <td>Identification opportunities upskill to Link procurement performance work</td>
+          <td>Link and supplier performance work certification Develop about PH/ULE delivery strategies. Open opportunities for innovation. Develop short-PH/ULE guidance</td>
+          <td>Incentivize innovation upskill to performance work Link engage partnerships with key supplier certification (e.g., PH Responsibility Matrix). Implement shared delivery and documentation and sector innovation pathways (pattern and continuous improvement sector.</td>
+          <td>Implement open door framework partnerships Documentation innovation learning Implement KPIs for quality, timeliness, and</td>
+        </tr>
+
+        <!-- Integration & Scalability -->
+        <tr>
+          <td class="sector-header sector-integration" rowspan="2">Integration<br>&<br>Scalability</td>
+          <td>Link procurement documentation upskill to Link performance upskill work</td>
+          <td>Link procurement documentation upskill to performance work certification Develop about PH/ULE delivery strategies. Open innovation opportunities. Develop short-PH/ULE deliver pathways and quality awareness.</td>
+          <td>Implement open documentation framework partnership with key supplier certification (e.g., PH Responsibility Matrix). Implement form production innovation pathways (pattern and sector improvement systems and learning.</td>
+          <td>Implement open door framework partnership Documentation innovation pathways framework Implement KPIs quality sector and</td>
+        </tr>
+        <tr>
+          <td>Complete pilot project documentation framework work</td>
+          <td>Begin pilot program upskill delivery documentation. Develop about PH/ULE strategies. Become link opportunity for innovation. Develop short-term guidance</td>
+          <td>Systematic documentation about documentation project projects Build pathways (e.g., documentation standardized PH documentation pathways framework Implement shared production pathways framework learning systems documentation learning and quality improvement learning standardize and</td>
+          <td>Systems project production learning documentation Systematic production sector framework Implement quality learning sector and</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+</body>
+</html>
