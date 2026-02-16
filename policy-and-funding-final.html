@@ -85,6 +85,60 @@
       box-shadow: 0 6px 12px rgba(118, 75, 162, 0.4);
     }
 
+    /* Debug Panel */
+    .debug-panel {
+      position: fixed;
+      bottom: 20px;
+      right: 20px;
+      background: white;
+      border: 2px solid #667eea;
+      border-radius: 12px;
+      padding: 1rem;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+      max-width: 300px;
+      z-index: 1000;
+    }
+
+    .debug-panel h3 {
+      margin-bottom: 0.5rem;
+      color: #667eea;
+      font-size: 0.9rem;
+    }
+
+    .debug-content {
+      font-size: 0.85rem;
+      color: #495057;
+      max-height: 200px;
+      overflow-y: auto;
+    }
+
+    .debug-item {
+      padding: 0.5rem;
+      margin: 0.25rem 0;
+      background: #f8f9fa;
+      border-radius: 6px;
+      border-left: 3px solid #667eea;
+    }
+
+    .debug-toggle {
+      position: fixed;
+      bottom: 20px;
+      right: 20px;
+      background: #667eea;
+      color: white;
+      border: none;
+      padding: 0.75rem 1rem;
+      border-radius: 8px;
+      cursor: pointer;
+      font-weight: 600;
+      box-shadow: 0 4px 12px rgba(102, 126, 234, 0.4);
+      z-index: 999;
+    }
+
+    .debug-toggle:hover {
+      background: #764ba2;
+    }
+
     /* Header Section */
     h1 {
       font-size: 2.5rem;
@@ -358,6 +412,11 @@
         width: 20px;
         height: 20px;
       }
+
+      .debug-panel, .debug-toggle {
+        bottom: 10px;
+        right: 10px;
+      }
     }
 
     @media (max-width: 480px) {
@@ -419,7 +478,7 @@
             </td>
             <td>
               <div class="select-container">
-                <select onchange="updateIndicator(this)">
+                <select id="q1-now" onchange="updateIndicator(this)">
                   <option value="">Select...</option>
                   <option value="1">No policy or strategic alignment with PH/ULE goals.</option>
                   <option value="2">Policy shows early interest or is in development.</option>
@@ -432,7 +491,7 @@
             </td>
             <td>
               <div class="select-container">
-                <select onchange="updateIndicator(this)">
+                <select id="q1-future" onchange="updateIndicator(this)">
                   <option value="">Select...</option>
                   <option value="1">No policy or strategic alignment with PH/ULE goals.</option>
                   <option value="2">Policy shows early interest or is in development.</option>
@@ -453,7 +512,7 @@
             </td>
             <td>
               <div class="select-container">
-                <select onchange="updateIndicator(this)">
+                <select id="q2-now" onchange="updateIndicator(this)">
                   <option value="">Select...</option>
                   <option value="1">No resource or strategy to secure funding for PH/ULE.</option>
                   <option value="2">Organisation plans to recruit resources and seek support for securing suitable funding options</option>
@@ -466,7 +525,7 @@
             </td>
             <td>
               <div class="select-container">
-                <select onchange="updateIndicator(this)">
+                <select id="q2-future" onchange="updateIndicator(this)">
                   <option value="">Select...</option>
                   <option value="1">No resource or strategy to secure funding for PH/ULE.</option>
                   <option value="2">Organisation plans to recruit resources and seek support for securing suitable funding options</option>
@@ -507,11 +566,42 @@
     </div>
   </main>
 
+  <!-- Debug Toggle Button -->
+  <button class="debug-toggle" onclick="toggleDebug()">View Saved Data</button>
+
+  <!-- Debug Panel (hidden by default) -->
+  <div class="debug-panel" id="debugPanel" style="display: none;">
+    <h3>Saved Values</h3>
+    <div class="debug-content" id="debugContent"></div>
+  </div>
+
   <script>
+    // Load saved values when page loads
+    window.addEventListener('DOMContentLoaded', function() {
+      // Get all select elements
+      document.querySelectorAll('select[id]').forEach(select => {
+        const savedValue = localStorage.getItem(select.id);
+        if (savedValue) {
+          select.value = savedValue;
+          // Trigger indicator update for loaded values
+          updateIndicator(select);
+        }
+      });
+    });
+
     function updateIndicator(selectElement) {
       const container = selectElement.parentElement;
       const indicator = container.querySelector('.status-indicator');
       const selectedValue = selectElement.value;
+      
+      // Save to localStorage
+      if (selectElement.id) {
+        if (selectedValue) {
+          localStorage.setItem(selectElement.id, selectedValue);
+        } else {
+          localStorage.removeItem(selectElement.id);
+        }
+      }
       
       // Remove all level classes
       indicator.classList.remove('level-1', 'level-2', 'level-3', 'level-4', 'level-5', 'show');
@@ -520,7 +610,66 @@
       if (selectedValue) {
         indicator.classList.add(`level-${selectedValue}`, 'show');
       }
+
+      // Update debug panel if it's visible
+      if (document.getElementById('debugPanel').style.display !== 'none') {
+        updateDebugPanel();
+      }
     }
+
+    function toggleDebug() {
+      const panel = document.getElementById('debugPanel');
+      if (panel.style.display === 'none') {
+        panel.style.display = 'block';
+        updateDebugPanel();
+      } else {
+        panel.style.display = 'none';
+      }
+    }
+
+    function updateDebugPanel() {
+      const debugContent = document.getElementById('debugContent');
+      debugContent.innerHTML = '';
+      
+      // Get all saved values
+      const savedData = {};
+      document.querySelectorAll('select[id]').forEach(select => {
+        const value = localStorage.getItem(select.id);
+        if (value) {
+          savedData[select.id] = value;
+        }
+      });
+
+      // Display saved values
+      if (Object.keys(savedData).length === 0) {
+        debugContent.innerHTML = '<p style="color: #6c757d; font-style: italic;">No data saved yet</p>';
+      } else {
+        for (const [key, value] of Object.entries(savedData)) {
+          const div = document.createElement('div');
+          div.className = 'debug-item';
+          div.innerHTML = `<strong>${key}:</strong> ${value}`;
+          debugContent.appendChild(div);
+        }
+      }
+    }
+
+    // Console function to access all saved data
+    function getAllSavedData() {
+      const data = {};
+      document.querySelectorAll('select[id]').forEach(select => {
+        const value = localStorage.getItem(select.id);
+        if (value) {
+          data[select.id] = parseInt(value);
+        }
+      });
+      return data;
+    }
+
+    // Make it available globally
+    window.getAllSavedData = getAllSavedData;
+
+    // Log on page load
+    console.log('Saved data:', getAllSavedData());
   </script>
 </body>
 </html>
