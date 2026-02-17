@@ -6,15 +6,12 @@
   <title>Email Results - PHOCUS Assessment</title>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@emailjs/browser@4/dist/email.min.js"></script>
   <style>
-    * {
-      margin: 0;
-      padding: 0;
-      box-sizing: border-box;
-    }
+    * { margin: 0; padding: 0; box-sizing: border-box; }
 
     body {
-      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
       line-height: 1.6;
       color: #2c3e50;
       background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
@@ -27,21 +24,14 @@
       margin: 0 auto;
       background: white;
       border-radius: 20px;
-      box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+      box-shadow: 0 20px 60px rgba(0,0,0,0.3);
       padding: 2rem;
       animation: fadeIn 0.6s ease-in;
     }
 
     @keyframes fadeIn {
       from { opacity: 0; transform: translateY(20px); }
-      to { opacity: 1; transform: translateY(0); }
-    }
-
-    .nav-buttons {
-      display: flex;
-      justify-content: flex-start;
-      gap: 1rem;
-      margin-bottom: 2rem;
+      to   { opacity: 1; transform: translateY(0); }
     }
 
     .nav-button {
@@ -53,33 +43,31 @@
       font-weight: 600;
       font-size: 0.9rem;
       transition: all 0.3s ease;
-      box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+      box-shadow: 0 4px 6px rgba(0,0,0,0.1);
       background: #f8f9fa;
       color: #495057;
       border: 2px solid #dee2e6;
+      margin-bottom: 2rem;
     }
 
     .nav-button:hover {
       background: #e9ecef;
       transform: translateX(-3px);
-      box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
     }
 
     h1 {
-      font-size: 2.5rem;
+      font-size: 2.2rem;
       font-weight: 800;
       background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
       -webkit-background-clip: text;
       -webkit-text-fill-color: transparent;
       background-clip: text;
-      margin-bottom: 1rem;
-      line-height: 1.2;
+      margin-bottom: 0.75rem;
     }
 
     .intro {
-      font-size: 1.05rem;
+      font-size: 1rem;
       color: #6c757d;
-      line-height: 1.6;
       margin-bottom: 2rem;
       padding: 1.25rem;
       background: #f8f9fa;
@@ -87,9 +75,21 @@
       border-radius: 8px;
     }
 
-    .form-group {
-      margin-bottom: 1.5rem;
+    /* ── Note about emails ── */
+    .info-box {
+      background: #e8f4fd;
+      border: 1px solid #b8daff;
+      border-radius: 10px;
+      padding: 1rem 1.25rem;
+      margin-bottom: 2rem;
+      font-size: 0.9rem;
+      color: #1a5276;
     }
+
+    .info-box strong { display: block; margin-bottom: 0.25rem; }
+
+    /* ── Form ── */
+    .form-group { margin-bottom: 1.5rem; }
 
     label {
       display: block;
@@ -107,23 +107,18 @@
       font-size: 0.95rem;
       border: 2px solid #dee2e6;
       border-radius: 8px;
-      background: white;
       color: #495057;
       transition: all 0.3s ease;
       font-family: inherit;
     }
 
-    input:focus,
-    textarea:focus {
+    input:focus, textarea:focus {
       outline: none;
       border-color: #667eea;
-      box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+      box-shadow: 0 0 0 3px rgba(102,126,234,0.1);
     }
 
-    textarea {
-      resize: vertical;
-      min-height: 100px;
-    }
+    textarea { resize: vertical; min-height: 90px; }
 
     .button-group {
       display: flex;
@@ -140,7 +135,7 @@
       font-size: 1rem;
       cursor: pointer;
       transition: all 0.3s ease;
-      box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+      box-shadow: 0 4px 6px rgba(0,0,0,0.1);
     }
 
     .btn-primary {
@@ -148,10 +143,7 @@
       color: white;
     }
 
-    .btn-primary:hover {
-      transform: translateY(-2px);
-      box-shadow: 0 6px 12px rgba(102, 126, 234, 0.4);
-    }
+    .btn-primary:hover { transform: translateY(-2px); box-shadow: 0 6px 12px rgba(102,126,234,0.4); }
 
     .btn-secondary {
       background: white;
@@ -159,280 +151,393 @@
       border: 2px solid #667eea;
     }
 
-    .btn-secondary:hover {
+    .btn-secondary:hover { background: #f8f9fa; }
+
+    .btn:disabled { opacity: 0.6; cursor: not-allowed; transform: none !important; }
+
+    /* ── Alerts ── */
+    .alert {
+      display: none;
+      padding: 1.25rem;
+      border-radius: 8px;
+      margin-top: 1.5rem;
+      font-weight: 500;
+      line-height: 1.5;
+    }
+    .alert.show { display: block; }
+    .alert-success { background: #d4edda; border: 1px solid #c3e6cb; color: #155724; }
+    .alert-error   { background: #f8d7da; border: 1px solid #f5c6cb; color: #721c24; }
+
+    /* Sending progress indicator */
+    .sending-steps {
+      display: none;
+      margin-top: 1.5rem;
+      padding: 1rem 1.25rem;
       background: #f8f9fa;
+      border-radius: 10px;
+      border: 1px solid #dee2e6;
     }
-
-    .btn:disabled {
-      opacity: 0.6;
-      cursor: not-allowed;
-      transform: none;
+    .sending-steps.show { display: block; }
+    .step {
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+      padding: 0.4rem 0;
+      font-size: 0.9rem;
+      color: #6c757d;
+      transition: color 0.3s;
     }
+    .step.done  { color: #28a745; }
+    .step.doing { color: #667eea; font-weight: 600; }
+    .step.error { color: #dc3545; }
+    .step-icon { font-size: 1rem; width: 1.25rem; text-align: center; }
 
-    .success-message {
-      display: none;
-      padding: 1.25rem;
-      background: #d4edda;
-      border: 1px solid #c3e6cb;
-      border-radius: 8px;
-      color: #155724;
-      margin-top: 1.5rem;
-      animation: slideIn 0.3s ease-out;
-    }
+    /* Hidden canvas */
+    #hiddenCanvas { position: absolute; left: -9999px; width: 500px; height: 500px; }
 
-    .success-message.show {
-      display: block;
-    }
-
-    @keyframes slideIn {
-      from {
-        opacity: 0;
-        transform: translateY(-10px);
-      }
-      to {
-        opacity: 1;
-        transform: translateY(0);
-      }
-    }
-
-    .error-message {
-      display: none;
-      padding: 1.25rem;
-      background: #f8d7da;
-      border: 1px solid #f5c6cb;
-      border-radius: 8px;
-      color: #721c24;
-      margin-top: 1.5rem;
-    }
-
-    .error-message.show {
-      display: block;
-    }
-
-    .hidden-canvas {
-      position: absolute;
-      left: -9999px;
-      width: 600px;
-      height: 600px;
-    }
-
-    @media (max-width: 768px) {
-      .button-group {
-        flex-direction: column;
-      }
+    @media (max-width: 600px) {
+      .button-group { flex-direction: column; }
     }
   </style>
 </head>
 <body>
   <div class="container">
-    <div class="nav-buttons">
-      <a href="action-plan.html" class="nav-button">← Back to Action Plan</a>
-    </div>
+    <a href="action-plan.html" class="nav-button">← Back to Action Plan</a>
 
     <h1>Email Your Results</h1>
-    
+
     <p class="intro">
-      Enter your details below to receive a PDF summary of your PHOCUS Maturity Assessment results, 
-      including your scores, radar chart visualization, and personalized action plan.
+      Enter your details below. Your results will be emailed to you, and a copy 
+      will also be sent to the PHOCUS team. You can also download a PDF locally.
     </p>
 
-    <form id="emailForm">
+    <div class="info-box">
+      <strong>📎 Note on attachments</strong>
+      EmailJS sends rich HTML emails with your full scores table embedded directly in the 
+      email body. To get a PDF copy, use the <em>Download PDF</em> button — this saves 
+      the file directly to your device.
+    </div>
+
+    <form id="emailForm" onsubmit="handleSend(event)">
       <div class="form-group">
-        <label for="name">Your Name *</label>
-        <input type="text" id="name" name="name" required placeholder="Enter your full name">
+        <label for="userName">Your Name *</label>
+        <input type="text" id="userName" required placeholder="Enter your full name">
       </div>
 
       <div class="form-group">
-        <label for="email">Email Address *</label>
-        <input type="email" id="email" name="email" required placeholder="your.email@example.com">
+        <label for="userEmail">Your Email Address *</label>
+        <input type="email" id="userEmail" required placeholder="your.email@example.com">
       </div>
 
       <div class="form-group">
-        <label for="organization">Organization</label>
-        <input type="text" id="organization" name="organization" placeholder="Your organization name (optional)">
+        <label for="userOrg">Organisation</label>
+        <input type="text" id="userOrg" placeholder="Your organisation name (optional)">
       </div>
 
       <div class="form-group">
-        <label for="notes">Additional Notes</label>
-        <textarea id="notes" name="notes" placeholder="Any additional comments or questions (optional)"></textarea>
+        <label for="userNotes">Additional Notes</label>
+        <textarea id="userNotes" placeholder="Any additional comments (optional)"></textarea>
       </div>
 
       <div class="button-group">
-        <button type="button" class="btn btn-secondary" onclick="downloadPDF()">Download PDF</button>
-        <button type="submit" class="btn btn-primary">Send Results via Email</button>
+        <button type="button" class="btn btn-secondary" onclick="downloadPDF()">⬇ Download PDF</button>
+        <button type="submit"  class="btn btn-primary"  id="sendBtn">✉ Send Results</button>
       </div>
     </form>
 
-    <div class="success-message" id="successMessage">
-      ✓ Your results have been sent! Please check your email inbox.
+    <!-- Step progress -->
+    <div class="sending-steps" id="sendingSteps">
+      <div class="step" id="step1"><span class="step-icon">○</span> Sending results to your email…</div>
+      <div class="step" id="step2"><span class="step-icon">○</span> Sending copy to PHOCUS team…</div>
+      <div class="step" id="step3"><span class="step-icon">○</span> Generating PDF download…</div>
     </div>
 
-    <div class="error-message" id="errorMessage">
-      ✗ There was an error sending your results. Please try downloading the PDF instead.
-    </div>
+    <div class="alert alert-success" id="alertSuccess"></div>
+    <div class="alert alert-error"   id="alertError"></div>
   </div>
 
-  <!-- Hidden canvas for chart rendering -->
-  <canvas id="hiddenChart" class="hidden-canvas"></canvas>
+  <canvas id="hiddenCanvas"></canvas>
 
   <script>
+    // ── EmailJS credentials ─────────────────────────────────────────
+    const EJS_PUBLIC_KEY  = 'i9Of6x5zUa-MrT8J-';
+    const EJS_SERVICE_ID  = 'service_a44niua';
+    const EJS_TEMPLATE_ID = 'template_avfcxxx8';
+
+    // Admin address that always receives a copy
+    const ADMIN_EMAIL = 'fez_lifts@gmail.com'; // ← change this to your address
+
+    // Initialise EmailJS once
+    emailjs.init({ publicKey: EJS_PUBLIC_KEY });
+
+    // ── Score data ──────────────────────────────────────────────────
     const weightings = {
-      'q1-now': 0.065, 'q1-future': 0.065,
-      'q2-now': 0.057, 'q2-future': 0.057,
-      'q3-now': 0.051, 'q3-future': 0.051,
-      'q4-now': 0.040, 'q4-future': 0.040,
-      'q5-now': 0.040, 'q5-future': 0.040,
-      'q6-now': 0.065, 'q6-future': 0.065,
-      'q7-now': 0.057, 'q7-future': 0.057,
-      'q8-now': 0.055, 'q8-future': 0.055,
-      'q9-now': 0.050, 'q9-future': 0.050,
-      'q10-now': 0.045, 'q10-future': 0.045,
-      'q11-now': 0.053, 'q11-future': 0.053,
-      'q12-now': 0.047, 'q12-future': 0.047,
-      'q13-now': 0.053, 'q13-future': 0.053,
-      'q14-now': 0.052, 'q14-future': 0.052,
-      'q15-now': 0.050, 'q15-future': 0.050,
-      'q16-now': 0.045, 'q16-future': 0.045,
-      'q17-now': 0.022, 'q17-future': 0.022,
-      'q18-now': 0.037, 'q18-future': 0.037,
-      'q19-now': 0.053, 'q19-future': 0.053
+      'q1-now':0.065,'q1-future':0.065, 'q2-now':0.057,'q2-future':0.057,
+      'q3-now':0.051,'q3-future':0.051, 'q4-now':0.040,'q4-future':0.040,
+      'q5-now':0.040,'q5-future':0.040, 'q6-now':0.065,'q6-future':0.065,
+      'q7-now':0.057,'q7-future':0.057, 'q8-now':0.055,'q8-future':0.055,
+      'q9-now':0.050,'q9-future':0.050, 'q10-now':0.045,'q10-future':0.045,
+      'q11-now':0.053,'q11-future':0.053,'q12-now':0.047,'q12-future':0.047,
+      'q13-now':0.053,'q13-future':0.053,'q14-now':0.052,'q14-future':0.052,
+      'q15-now':0.050,'q15-future':0.050,'q16-now':0.045,'q16-future':0.045,
+      'q17-now':0.022,'q17-future':0.022,'q18-now':0.037,'q18-future':0.037,
+      'q19-now':0.053,'q19-future':0.053
     };
 
     const sectorQuestions = {
-      'Policy & Funding': ['q1', 'q2'],
-      'Overarching Strategies': ['q3', 'q4'],
-      'Organisational Capability': ['q5', 'q6', 'q7', 'q8', 'q9'],
-      'Process Maturity': ['q10', 'q11', 'q12', 'q13', 'q14'],
-      'Supply Chain Readiness': ['q15', 'q16', 'q17'],
-      'Integration & Scalability': ['q18', 'q19']
+      'Policy & Funding':          ['q1','q2'],
+      'Overarching Strategies':    ['q3','q4'],
+      'Organisational Capability': ['q5','q6','q7','q8','q9'],
+      'Process Maturity':          ['q10','q11','q12','q13','q14'],
+      'Supply Chain Readiness':    ['q15','q16','q17'],
+      'Integration & Scalability': ['q18','q19']
     };
 
-    function calculateSectorScore(sectorName, timeframe) {
-      const questions = sectorQuestions[sectorName];
-      let totalWeightedScore = 0;
-      
-      questions.forEach(qNum => {
-        const key = `${qNum}-${timeframe}`;
-        const value = parseInt(localStorage.getItem(key)) || 0;
-        const weight = weightings[key] || 0;
-        totalWeightedScore += value * weight;
-      });
-      
-      return totalWeightedScore;
+    function sectorScore(sector, timeframe) {
+      return sectorQuestions[sector].reduce((sum, q) => {
+        const key = `${q}-${timeframe}`;
+        return sum + (parseInt(localStorage.getItem(key)) || 0) * (weightings[key] || 0);
+      }, 0);
     }
 
-    async function generateChartImage() {
-      return new Promise((resolve) => {
-        const canvas = document.getElementById('hiddenChart');
-        const ctx = canvas.getContext('2d');
+    // Build a clean HTML scores table for email body
+    function buildHtmlTable() {
+      let rows = '';
+      let nowTotal = 0, futureTotal = 0;
 
-        const sectorScores = {};
-        Object.keys(sectorQuestions).forEach(sector => {
-          sectorScores[sector] = {
-            now: calculateSectorScore(sector, 'now'),
-            future: calculateSectorScore(sector, 'future')
-          };
+      Object.keys(sectorQuestions).forEach(sector => {
+        const n = sectorScore(sector, 'now');
+        const f = sectorScore(sector, 'future');
+        nowTotal   += n;
+        futureTotal += f;
+        rows += `
+          <tr>
+            <td style="padding:10px 14px; border-bottom:1px solid #e9ecef; font-weight:600;">${sector}</td>
+            <td style="padding:10px 14px; border-bottom:1px solid #e9ecef; text-align:center; color:#76b041; font-weight:700;">${n.toFixed(3)}</td>
+            <td style="padding:10px 14px; border-bottom:1px solid #e9ecef; text-align:center; color:#f77f00; font-weight:700;">${f.toFixed(3)}</td>
+          </tr>`;
+      });
+
+      rows += `
+        <tr style="background:#f0f4ff;">
+          <td style="padding:12px 14px; font-weight:800; color:#2c3e50;">TOTAL</td>
+          <td style="padding:12px 14px; text-align:center; font-weight:800; color:#76b041;">${nowTotal.toFixed(3)}</td>
+          <td style="padding:12px 14px; text-align:center; font-weight:800; color:#f77f00;">${futureTotal.toFixed(3)}</td>
+        </tr>`;
+
+      return `
+        <table style="width:100%; border-collapse:collapse; font-family:sans-serif; font-size:14px; border:1px solid #dee2e6; border-radius:8px; overflow:hidden;">
+          <thead>
+            <tr style="background:linear-gradient(135deg,#667eea,#764ba2); color:white;">
+              <th style="padding:12px 14px; text-align:left;">Sector</th>
+              <th style="padding:12px 14px; text-align:center;">Now</th>
+              <th style="padding:12px 14px; text-align:center;">Future</th>
+            </tr>
+          </thead>
+          <tbody>${rows}</tbody>
+        </table>`;
+    }
+
+    // ── Step indicator helpers ───────────────────────────────────────
+    function setStep(id, state, iconOverride) {
+      const el   = document.getElementById(id);
+      const icon = el.querySelector('.step-icon');
+      el.className = `step ${state}`;
+      if (state === 'doing')  icon.textContent = '⏳';
+      if (state === 'done')   icon.textContent = '✅';
+      if (state === 'error')  icon.textContent = '❌';
+      if (iconOverride) icon.textContent = iconOverride;
+    }
+
+    // ── Main send handler ────────────────────────────────────────────
+    async function handleSend(e) {
+      e.preventDefault();
+
+      const name  = document.getElementById('userName').value.trim();
+      const email = document.getElementById('userEmail').value.trim();
+      const org   = document.getElementById('userOrg').value.trim()   || 'Not provided';
+      const notes = document.getElementById('userNotes').value.trim() || 'None';
+      const date  = new Date().toLocaleDateString('en-GB', { day:'numeric', month:'long', year:'numeric' });
+
+      const btn = document.getElementById('sendBtn');
+      btn.disabled    = true;
+      btn.textContent = 'Sending…';
+
+      document.getElementById('alertSuccess').classList.remove('show');
+      document.getElementById('alertError').classList.remove('show');
+      document.getElementById('sendingSteps').classList.add('show');
+
+      const scoresHtml = buildHtmlTable();
+      let allOk = true;
+
+      // ── Email 1: to the user ──────────────────────────────────────
+      setStep('step1', 'doing');
+      try {
+        await emailjs.send(EJS_SERVICE_ID, EJS_TEMPLATE_ID, {
+          to_email:     email,
+          to_name:      name,
+          organisation: org,
+          notes:        notes,
+          date:         date,
+          scores_table: scoresHtml,
+          email_type:   'user'   // lets you branch in the template if needed
         });
+        setStep('step1', 'done');
+      } catch (err) {
+        console.error('User email failed:', err);
+        setStep('step1', 'error');
+        allOk = false;
+      }
 
-        new Chart(ctx, {
+      // ── Email 2: copy to admin ────────────────────────────────────
+      setStep('step2', 'doing');
+      try {
+        await emailjs.send(EJS_SERVICE_ID, EJS_TEMPLATE_ID, {
+          to_email:     ADMIN_EMAIL,
+          to_name:      'PHOCUS Team',
+          organisation: org,
+          notes:        `Submitted by: ${name} (${email})\n\n${notes}`,
+          date:         date,
+          scores_table: scoresHtml,
+          email_type:   'admin'
+        });
+        setStep('step2', 'done');
+      } catch (err) {
+        console.error('Admin email failed:', err);
+        setStep('step2', 'error');
+        // Don't block user-facing success if only admin copy failed
+      }
+
+      // ── Step 3: PDF download ──────────────────────────────────────
+      setStep('step3', 'doing');
+      try {
+        await downloadPDF(name, org);
+        setStep('step3', 'done');
+      } catch (err) {
+        console.error('PDF error:', err);
+        setStep('step3', 'error');
+      }
+
+      // ── Final message ─────────────────────────────────────────────
+      btn.disabled    = false;
+      btn.textContent = '✉ Send Results';
+
+      if (allOk) {
+        document.getElementById('alertSuccess').textContent =
+          `✓ Done! Results sent to ${email} and a copy to the PHOCUS team. Your PDF has also been downloaded.`;
+        document.getElementById('alertSuccess').classList.add('show');
+      } else {
+        document.getElementById('alertError').textContent =
+          `⚠ There was a problem sending to ${email}. Your PDF has been downloaded — please forward it manually if needed.`;
+        document.getElementById('alertError').classList.add('show');
+      }
+    }
+
+    // ── PDF download ─────────────────────────────────────────────────
+    async function downloadPDF(name, org) {
+      // Allow calling with no args from the button
+      name = name || document.getElementById('userName').value || 'Not provided';
+      org  = org  || document.getElementById('userOrg').value  || 'Not provided';
+
+      const { jsPDF } = window.jspdf;
+      const doc  = new jsPDF();
+      const date = new Date().toLocaleDateString('en-GB', { day:'numeric', month:'long', year:'numeric' });
+
+      // Header bar
+      doc.setFillColor(102, 126, 234);
+      doc.rect(0, 0, 210, 30, 'F');
+      doc.setFontSize(16);
+      doc.setTextColor(255, 255, 255);
+      doc.setFont('helvetica', 'bold');
+      doc.text('PHOCUS Maturity Assessment Results', 14, 19);
+
+      // Meta info
+      doc.setFontSize(11);
+      doc.setTextColor(60, 60, 60);
+      doc.setFont('helvetica', 'normal');
+      doc.text(`Name: ${name}`,          14, 42);
+      doc.text(`Organisation: ${org}`,   14, 50);
+      doc.text(`Date: ${date}`,          14, 58);
+
+      // Sector scores table
+      doc.setFont('helvetica', 'bold');
+      doc.setFontSize(12);
+      doc.text('Sector Scores', 14, 72);
+
+      doc.setFont('helvetica', 'normal');
+      doc.setFontSize(10);
+      let y = 82;
+      let nowTotal = 0, futureTotal = 0;
+
+      Object.keys(sectorQuestions).forEach((sector, i) => {
+        const n = sectorScore(sector, 'now');
+        const f = sectorScore(sector, 'future');
+        nowTotal   += n;
+        futureTotal += f;
+        doc.setFillColor(i % 2 === 0 ? 248 : 255, i % 2 === 0 ? 249 : 255, i % 2 === 0 ? 250 : 255);
+        doc.rect(14, y - 5, 182, 9, 'F');
+        doc.setTextColor(44, 62, 80);
+        doc.text(sector,             16, y);
+        doc.setTextColor(118, 176, 65);
+        doc.text(`Now: ${n.toFixed(3)}`,    130, y);
+        doc.setTextColor(247, 127, 0);
+        doc.text(`Future: ${f.toFixed(3)}`, 163, y);
+        y += 11;
+      });
+
+      // Totals row
+      doc.setFillColor(224, 231, 255);
+      doc.rect(14, y - 5, 182, 9, 'F');
+      doc.setFont('helvetica', 'bold');
+      doc.setTextColor(44, 62, 80);
+      doc.text('TOTAL',                        16, y);
+      doc.setTextColor(118, 176, 65);
+      doc.text(`Now: ${nowTotal.toFixed(3)}`,    130, y);
+      doc.setTextColor(247, 127, 0);
+      doc.text(`Future: ${futureTotal.toFixed(3)}`, 163, y);
+
+      // Radar chart on page 2
+      const chartImg = await renderChartToImage();
+      doc.addPage();
+      doc.setFont('helvetica', 'bold');
+      doc.setFontSize(13);
+      doc.setTextColor(60, 60, 60);
+      doc.text('Radar Chart — Now vs Future', 14, 20);
+      doc.addImage(chartImg, 'PNG', 20, 28, 170, 170);
+
+      doc.save('PHOCUS-Assessment-Results.pdf');
+    }
+
+    // ── Render hidden chart to base64 image ──────────────────────────
+    function renderChartToImage() {
+      return new Promise(resolve => {
+        const canvas = document.getElementById('hiddenCanvas');
+        canvas.width  = 500;
+        canvas.height = 500;
+        const existing = Chart.getChart(canvas);
+        if (existing) existing.destroy();
+
+        const labels     = Object.keys(sectorQuestions);
+        const nowData    = labels.map(s => sectorScore(s, 'now'));
+        const futureData = labels.map(s => sectorScore(s, 'future'));
+
+        new Chart(canvas.getContext('2d'), {
           type: 'radar',
           data: {
-            labels: Object.keys(sectorQuestions),
+            labels,
             datasets: [
-              {
-                label: 'Now',
-                data: Object.values(sectorScores).map(s => s.now),
-                borderColor: 'rgb(102, 126, 234)',
-                backgroundColor: 'rgba(102, 126, 234, 0.2)',
-                borderWidth: 2
-              },
-              {
-                label: 'Future',
-                data: Object.values(sectorScores).map(s => s.future),
-                borderColor: 'rgb(255, 159, 64)',
-                backgroundColor: 'rgba(255, 159, 64, 0.2)',
-                borderWidth: 2
-              }
+              { label:'Now',    data:nowData,    borderColor:'#76b041', backgroundColor:'rgba(118,176,65,0.2)', borderWidth:2 },
+              { label:'Future', data:futureData, borderColor:'#f77f00', backgroundColor:'rgba(247,127,0,0.2)',  borderWidth:2 }
             ]
           },
           options: {
-            responsive: true,
-            scales: {
-              r: {
-                beginAtZero: true,
-                max: 5
-              }
-            },
-            animation: {
-              onComplete: () => {
-                resolve(canvas.toDataURL('image/png'));
-              }
-            }
+            animation: { onComplete: () => resolve(canvas.toDataURL('image/png')) },
+            scales: { r: { suggestedMin:0, suggestedMax:0.35 } },
+            plugins: { legend: { position:'bottom' } }
           }
         });
       });
     }
-
-    async function downloadPDF() {
-      const { jsPDF } = window.jspdf;
-      const doc = new jsPDF();
-
-      // Title
-      doc.setFontSize(20);
-      doc.setTextColor(102, 126, 234);
-      doc.text('PHOCUS Maturity Assessment Results', 20, 20);
-
-      // User info
-      doc.setFontSize(12);
-      doc.setTextColor(0, 0, 0);
-      const name = document.getElementById('name').value || 'Not provided';
-      const org = document.getElementById('organization').value || 'Not provided';
-      doc.text(`Name: ${name}`, 20, 35);
-      doc.text(`Organization: ${org}`, 20, 42);
-      doc.text(`Date: ${new Date().toLocaleDateString()}`, 20, 49);
-
-      // Scores
-      doc.setFontSize(14);
-      doc.text('Sector Scores:', 20, 65);
-      doc.setFontSize(10);
-      
-      let yPos = 75;
-      Object.keys(sectorQuestions).forEach(sector => {
-        const nowScore = calculateSectorScore(sector, 'now').toFixed(2);
-        const futureScore = calculateSectorScore(sector, 'future').toFixed(2);
-        doc.text(`${sector}: Now=${nowScore}, Future=${futureScore}`, 25, yPos);
-        yPos += 7;
-      });
-
-      // Chart
-      const chartImage = await generateChartImage();
-      doc.addImage(chartImage, 'PNG', 20, yPos + 10, 170, 170);
-
-      // Save
-      doc.save('PHOCUS-Assessment-Results.pdf');
-    }
-
-    document.getElementById('emailForm').addEventListener('submit', async function(e) {
-      e.preventDefault();
-      
-      const submitBtn = e.target.querySelector('.btn-primary');
-      submitBtn.disabled = true;
-      submitBtn.textContent = 'Sending...';
-
-      // Simulate email sending (in production, this would call a backend API)
-      setTimeout(() => {
-        document.getElementById('successMessage').classList.add('show');
-        submitBtn.disabled = false;
-        submitBtn.textContent = 'Send Results via Email';
-        
-        // Also download PDF
-        downloadPDF();
-
-        setTimeout(() => {
-          document.getElementById('successMessage').classList.remove('show');
-        }, 5000);
-      }, 1500);
-    });
   </script>
 </body>
 </html>
